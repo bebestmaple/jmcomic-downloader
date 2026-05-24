@@ -118,6 +118,7 @@ impl JmClient {
             .request(method, format!("https://{api_domain}{path}").as_str())
             .header("token", token)
             .header("tokenparam", tokenparam)
+            .header("accept-language","zh-CN;")
             .header("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36");
 
         let http_resp = match form {
