@@ -23,7 +23,7 @@ use tokio::time::sleep;
 use crate::events::{DownloadSleepingEvent, DownloadTaskEvent};
 use crate::extensions::{AnyhowErrorToStringChain, AppHandleExt};
 use crate::types::{ChapterInfo, Comic, DownloadFormat};
-use crate::utils::filename_filter;
+use crate::utils::{filename_filter, normalize_dir_name};
 use crate::{utils, DownloadSpeedEvent};
 
 pub const IMAGE_DOMAIN: &str = "cdn-msp2.jmapiproxy2.cc";
@@ -1021,6 +1021,7 @@ impl ChapterInfo {
         for fmt in dir_fmt_parts {
             let dir_name = strfmt(fmt, &vars).context("格式化目录名失败")?;
             let dir_name = filename_filter(&dir_name);
+            let dir_name = normalize_dir_name(app, &dir_name);
             if !dir_name.is_empty() {
                 dir_names.push(dir_name);
             }

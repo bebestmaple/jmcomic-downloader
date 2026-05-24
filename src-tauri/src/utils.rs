@@ -3,8 +3,10 @@ use std::{collections::HashMap, path::PathBuf};
 use anyhow::Context;
 use tauri::AppHandle;
 use walkdir::WalkDir;
+use zhconv::{zhconv, Variant};
 
 use crate::{
+    config::DirNameNormalization,
     extensions::{AppHandleExt, WalkDirEntryExt},
     types::Comic,
 };
@@ -27,6 +29,16 @@ pub fn filename_filter(s: &str) -> String {
         .trim_end_matches('.')
         .trim()
         .to_string()
+}
+
+/// 根据配置将目录名规范化为简体或繁体，`Disabled` 时原样返回
+pub fn normalize_dir_name(app: &AppHandle, name: &str) -> String {
+    let mode = app.get_config().read().dir_name_normalization;
+    match mode {
+        DirNameNormalization::Disabled => name.to_string(),
+        DirNameNormalization::Simplified => zhconv(name, Variant::ZhHans),
+        DirNameNormalization::Traditional => zhconv(name, Variant::ZhHant),
+    }
 }
 
 // 计算MD5哈希并返回十六进制字符串

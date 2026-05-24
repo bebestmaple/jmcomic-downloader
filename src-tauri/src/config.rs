@@ -33,6 +33,7 @@ pub struct Config {
     pub api_domain_mode: ApiDomainMode,
     pub custom_api_domain: String,
     pub should_download_cover: bool,
+    pub dir_name_normalization: DirNameNormalization,
 }
 
 impl Config {
@@ -118,6 +119,7 @@ impl Config {
             api_domain_mode: ApiDomainMode::Domain2,
             custom_api_domain: API_DOMAIN_2.to_string(),
             should_download_cover: true,
+            dir_name_normalization: DirNameNormalization::default(),
         }
     }
 }
@@ -131,4 +133,12 @@ pub enum ApiDomainMode {
     Domain4,
     Domain5,
     Custom,
+}
+
+#[derive(Default, Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Type)]
+pub enum DirNameNormalization {
+    #[default]
+    Disabled,
+    Simplified,
+    Traditional,
 }

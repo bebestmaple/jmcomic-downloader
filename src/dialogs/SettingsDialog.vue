@@ -20,6 +20,14 @@ watch([() => store.config?.apiDomainMode, () => store.config?.customApiDomain], 
   message.warning('切换线路后可能需要重新登录')
 })
 
+watch(
+  () => store.config?.dirNameNormalization,
+  (_, oldVal) => {
+    if (oldVal === undefined) return
+    message.warning('已下载的目录不会自动改名，切换后可能产生重复目录')
+  },
+)
+
 async function showConfigInFileManager() {
   const configName = 'config.json'
   const configPath = await path.join(await appDataDir(), configName)
@@ -247,6 +255,31 @@ async function showConfigInFileManager() {
 
         <span class="font-bold mt-2">其他</span>
         <n-checkbox class="w-fit" v-model:checked="store.config.shouldDownloadCover">下载封面</n-checkbox>
+
+        <span class="font-bold mt-2">目录名简繁转换</span>
+        <n-tooltip placement="top" trigger="hover">
+          <div>对生成的下载目录名进行简繁中文转换</div>
+          <div class="mt-1">
+            <span class="rounded bg-gray-500 px-1 text-white">不转换</span>
+            <span class="ml-2">保持原样</span>
+          </div>
+          <div>
+            <span class="rounded bg-gray-500 px-1 text-white">简体</span>
+            <span class="ml-2">繁体字 → 简体字</span>
+          </div>
+          <div>
+            <span class="rounded bg-gray-500 px-1 text-white">繁体</span>
+            <span class="ml-2">简体字 → 繁体字</span>
+          </div>
+          <div class="text-orange mt-1">已下载的目录不会自动改名，切换后可能产生重复目录</div>
+          <template #trigger>
+            <n-radio-group v-model:value="store.config.dirNameNormalization" size="small">
+              <n-radio-button value="Disabled">不转换</n-radio-button>
+              <n-radio-button value="Simplified">简体</n-radio-button>
+              <n-radio-button value="Traditional">繁体</n-radio-button>
+            </n-radio-group>
+          </template>
+        </n-tooltip>
 
         <n-button class="ml-auto mt-4" size="small" @click="showConfigInFileManager">打开配置目录</n-button>
       </div>
